@@ -80,25 +80,20 @@ int main(int argc, char** argv)
   goal.target_pose.header.stamp = ros::Time::now();
   
   n.getParam("param", param);
-  // ROS_INFO("ROS Param = %s", param.c_str());
   while(!ac.waitForServer(ros::Duration(5.0)))
   {
     ROS_INFO("Waiting for the move_base action server to come up");
   }
   ac_ptr = &ac;
-  // ros::Subscriber pose_subscriber = n.subscribe("amcl_pose", 100, amclPoseCallback);
   ros::Subscriber marker_sub;
   if(param.compare("home_service_robot") == 0)
   {
-    // ROS_INFO("Starting home service robot routine...");
-    // ros::Subscriber marker_sub = n.subscribe("/add_markers/visualization_marker", 20, MarkerMsgCallback);
     std::string topicName = ros::names::clean(n.resolveName("/visualization_marker"));
     ROS_INFO("Topic to subscribe: %s", topicName.c_str());
     marker_sub = n.subscribe(topicName, 20, MarkerMsgCallback);
   }
   else
   {
-    // ROS_INFO("Starting picking objects routine...");
     simulatePickObjects();
   }
   ros::spin();

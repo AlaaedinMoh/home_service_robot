@@ -48,9 +48,8 @@ bool StartHomeSvcRobotRoutine(ros::Subscriber* subscriber, visualization_msgs::M
   return true;
 }
 
-void velocityCallback(const nav_msgs::Odometry::ConstPtr& odom)
+void odometryCallback(const nav_msgs::Odometry::ConstPtr& odom)
 {
-  // ROS_INFO("robot velocity: x= %f ,y=%f", odom->twist.twist.linear.x, odom->twist.twist.linear.y);
   if(fabs(odom->twist.twist.linear.x) < 0.0001 && fabs(odom->twist.twist.linear.y) < 0.0001)
   {
     if(!isDelivered && comparePose(robotPose.pose.pose, marker_ptr->pose))
@@ -140,14 +139,12 @@ int main( int argc, char** argv )
   bool ok = false;
   if(param.compare("home_service_robot") == 0)
   {
-    // ROS_INFO("Starting home service robot routine...");
     pose_subscriber = n.subscribe("/amcl_pose", 100, amclPoseCallback);
-    vel_subscriber = n.subscribe("/odom", 10, velocityCallback);
+    vel_subscriber = n.subscribe("/odom", 10, odometryCallback);
     ok = StartHomeSvcRobotRoutine(&pose_subscriber, &marker);
   }
   else
   {
-    // ROS_INFO("Starting add markers routine...");
     ok = simulateMarkerPoses();
   }
   
